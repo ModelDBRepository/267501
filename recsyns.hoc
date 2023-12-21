@@ -1,0 +1,47 @@
+objref tfile
+strdef tstr
+proc recsyns(){
+	sbgexcB=0
+	sbgexcA=0
+	sbginhB=0
+	sbginhA=0
+	sstimB=0
+	sstimA=0
+
+	sprint(tstr,"%s/synapses_%d.csv",temp_dir,n_neuron)
+	//sprint(tstr,"tags/synapses.csv")
+	print tstr
+	tfile=new File()
+	tfile.wopen(tstr)
+	tfile.printf("Dendrite,BGexc,BGinh,SDexc\n")
+
+	for i=0,6{
+		sbgexcB+=mat_bas.x(i)
+		sbginhB+=mat_inh_bas.x(i)
+		print "Basal dendrite ",i, " receives ", mat_bas.x(i), " background excitatory synapses."
+		print "Basal dendrite ",i, " receives ", mat_inh_bas.x(i), " background inhibitory synapses."
+		sstimB+=mat_bas_st.x(i)
+		print "Basal ",i, " receives ", mat_bas_st.x(i), " stim-driven excitatory synapses."
+		tfile.printf("B%d,%d,%d,%d\n",i,mat_bas.x(i),mat_inh_bas.x(i),mat_bas_st.x(i))
+	}
+	for i=0,42{
+		sbgexcA+=mat_ap.x(i)
+		sbginhA+=mat_inh_ap.x(i)
+		print "Apical dendrite ",i, " receives ", mat_ap.x(i), " background excitatory synapses."
+		print "Apical dendrite ",i, " receives ", mat_inh_ap.x(i), " background inhibitory synapses."
+		sstimA+=mat_ap_st.x(i)
+		print "Apical ",i, " receives ", mat_ap_st.x(i), " stim-driven excitatory synapses."
+		tfile.printf("A%d,%d,%d,%d\n",i,mat_ap.x(i),mat_inh_ap.x(i),mat_ap_st.x(i))
+	}
+	print "Actual Synaptic Totals: "
+	print "Background: "
+	print "Background Excitatory Basal: ", sbgexcB, " (defined as ", syn_basal, " )"
+	print "Background Inhibitory Basal: ", sbginhB, " (defined as ", syn_inh_basal, " )"
+	print "Background Excitatory Apical: ", sbgexcA, " (defined as ", syn_apical, " )"
+	print "Background Inhibitory Apical: ", sbginhA, " (defined as ", syn_inh_apical, " )"
+	print "Stim-driven:"
+	print "Basal: ", sstimB, "(defined as ", total_syn_basal," )"
+	print "Apical: ", sstimA, "(defined as ", total_syn_apic," )"
+
+	tfile.close()
+}
